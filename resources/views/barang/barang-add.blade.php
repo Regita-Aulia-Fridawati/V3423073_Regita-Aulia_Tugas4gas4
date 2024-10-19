@@ -21,7 +21,7 @@
     </div><!-- /.container-fluid -->
   </div>
   <!-- /.content-header -->
-<!-- tes commit-->
+
   <!-- Main content -->
   <div class="content">
     <div class="container-fluid">
