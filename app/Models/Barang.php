@@ -14,4 +14,12 @@ class Barang extends Model
     protected $table = 'barangs';
 
     protected $guarded = ['id_barang'];
+    protected $fillable = [
+        'name',
+        'category',
+        'image',
+        'stock',
+        'price',
+        'note'
+    ];
 }
