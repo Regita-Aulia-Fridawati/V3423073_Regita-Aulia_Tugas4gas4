@@ -54,7 +54,7 @@
                                         @foreach ($barang as $data)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td><img src="/images/{{ $data->image }}" width="100px"></td>
                                                 <td>{{ $data->name }}</td>
                                                 <td>{{ $data->category }}</td>
                                                 <td>{{ $data->stock }}</td>
@@ -66,18 +66,16 @@
                                                             <i class="fa-solid fa-pen"></i> Edit
                                                         </button>
                                                     </form>
-                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}" method="POST">
-                                                        @csrf
-                                                        @method('delete')
-                                                        <button type="submit" class="btn btn-info btn-sm text-xs px-2 py-1" id="btn-delete">
-                                                            <i class="fa fa-eye"></i> Edit
+                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}" method="GET">
+                                                        <button type="submit" class="btn btn-info btn-sm text-xs px-2 py-1">
+                                                            <i class="fa fa-eye"></i> Show
                                                         </button>
                                                     </form>
                                                     <form class="d-inline" action="/barang/{{ $data->id_barang }}" method="POST">
                                                         @csrf
                                                         @method('delete')
                                                         <button type="submit" class="btn btn-danger btn-sm text-xs px-2 py-1" id="btn-delete">
-                                                            <i class="fa-solid fa-trash-can"></i> Show
+                                                            <i class="fa-solid fa-trash-can"></i> Delete
                                                         </button>
                                                     </form>
                                                 </td>

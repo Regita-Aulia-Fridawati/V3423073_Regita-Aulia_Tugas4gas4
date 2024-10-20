@@ -36,7 +36,7 @@
                 </a>
               </div>
             </div>
-            <form class="needs-validation" novalidate action="/barang" method="POST">
+            <form class="needs-validation" novalidate action="/barang" method="POST" enctype="multipart/form-data">
               @csrf
               <div class="card-body">
                 <div class="row">
@@ -62,9 +62,9 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label for="supplier">Supplier</label>
-                      <input type="text" name="supplier" class="form-control @error('supplier') is-invalid @enderror" id="supplier" placeholder="Supplier" value="{{old('supplier')}}" required>
-                      @error('supplier')
+                      <label for="price">Price</label>
+                      <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" id="price" placeholder="Price" value="{{old('price')}}" required>
+                      @error('price')
                       <span class="invalid-feedback text-danger">{{ $message }}</span>
                       @enderror
                     </div>
@@ -81,10 +81,10 @@
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
-                    <div class="form-group">
-                      <label for="price">Price</label>
-                      <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" id="price" placeholder="Price" value="{{old('price')}}" required>
-                      @error('price')
+                    <div class=" form-group">
+                      <label for="image">Image</label>
+                      <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" id="image" required>
+                      @error('image')
                       <span class="invalid-feedback text-danger">{{ $message }}</span>
                       @enderror
                     </div>

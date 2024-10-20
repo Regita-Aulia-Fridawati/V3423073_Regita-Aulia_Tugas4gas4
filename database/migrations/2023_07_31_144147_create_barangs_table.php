@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id_barang');
             $table->string('name', 100);
             $table->string('category', 50);
-            $table->string('supplier', 100);
+            $table->string('image', 100);
             $table->string('stock', 5);
             $table->string('price', 50);
             $table->text('note');
