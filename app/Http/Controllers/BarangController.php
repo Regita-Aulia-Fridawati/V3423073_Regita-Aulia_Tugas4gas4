@@ -34,16 +34,25 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|max:100|unique:barangs',
             'category' => 'required',
-            'supplier' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'stock' => 'required',
             'price' => 'required',
             'note' => 'max:1000',
         ]);
+        $input = $request->all();
+    
+        if ($image = $request->file('image')) {
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$profileImage";
+        }
 
-        $barang = Barang::create($request->all());
+
+        Barang::create($input);
 
         Alert::success('Success', 'Barang has been saved !');
         return redirect('/barang');
@@ -73,23 +82,39 @@ class BarangController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id_barang)
-    {
-        $validated = $request->validate([
-            'name' => 'required|max:100|unique:barangs,name,' . $id_barang . ',id_barang',
-            'category' => 'required',
-            'supplier' => 'required',
-            'stock' => 'required',
-            'price' => 'required',
-            'note' => 'max:1000',
-        ]);
+{
+    $barang = Barang::findOrFail($id_barang);
 
-        $barang = Barang::findOrFail($id_barang);
-        $barang->update($validated);
+    $validated = $request->validate([
+        'name' => 'required|max:100|unique:barangs,name,' . $id_barang . ',id_barang',
+        'category' => 'required',
+        'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
+        'stock' => 'required',
+        'price' => 'required',
+        'note' => 'max:1000',
+    ]);
 
-        Alert::info('Success', 'Barang has been updated !');
-        return redirect('/barang');
+    if ($request->hasFile('image')) {
+        // Hapus file gambar lama
+        if ($barang->image) {
+            $oldImagePath = public_path('images/' . $barang->image);
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+
+        // Upload file gambar baru
+        $image = $request->file('image');
+        $imageName = date('YmdHis') . "." . $image->getClientOriginalExtension();
+        $image->move(public_path('images'), $imageName);
+        $validated['image'] = $imageName;
     }
 
+    $barang->update($validated);
+
+    Alert::info('Success', 'Barang has been updated !');
+    return redirect('/barang');
+}
     /**
      * Remove the specified resource from storage.
      */
