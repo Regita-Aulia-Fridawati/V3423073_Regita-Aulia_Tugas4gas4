@@ -51,13 +51,17 @@
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label for="category">Category</label>
-                      <input type="text" name="category" class="form-control @error('category') is-invalid @enderror" id="category" placeholder="Category" value="{{old('category')}}" required>
-                      @error('category')
-                      <span class="invalid-feedback text-danger">{{ $message }}</span>
-                      @enderror
+                        <label for="category">Category</label>
+                        <select name="category" class="form-control @error('category') is-invalid @enderror" id="category" required>
+                            <option value="Roti Asin" {{ old('category') == 'Roti Asin' ? 'selected' : '' }}>Roti Asin</option>
+                            <option value="Roti Tawar" {{ old('category') == 'Roti Tawar' ? 'selected' : '' }}>Roti Tawar</option>
+                            <option value="Roti Manis" {{ old('category') == 'Roti Manis' ? 'selected' : '' }}>Roti Manis</option>
+                        </select>
+                        @error('category')
+                        <span class="invalid-feedback text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
-                  </div>
+                </div>
                 </div>
                 <div class="row">
                   <div class="col-lg-6">

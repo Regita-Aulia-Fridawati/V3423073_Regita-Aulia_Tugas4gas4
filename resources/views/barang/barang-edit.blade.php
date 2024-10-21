@@ -53,7 +53,11 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label for="category">Category</label>
-                                            <input type="text" name="category" class="form-control @error('category') is-invalid @enderror" id="category" placeholder="Category" value="{{old('category', $barang->category)}}" required>
+                                            <select name="category" class="form-control @error('category') is-invalid @enderror" id="category" required>
+                                                <option value="Roti Asin" {{ old('category', $barang->category) == 'Roti Asin' ? 'selected' : '' }}>Roti Asin</option>
+                                                <option value="Roti Tawar" {{ old('category', $barang->category) == 'Roti Tawar' ? 'selected' : '' }}>Roti Tawar</option>
+                                                <option value="Roti Manis" {{ old('category', $barang->category) == 'Roti Manis' ? 'selected' : '' }}>Roti Manis</option>
+                                            </select>
                                             @error('category')
                                             <span class="invalid-feedback text-danger">{{ $message }}</span>
                                             @enderror
