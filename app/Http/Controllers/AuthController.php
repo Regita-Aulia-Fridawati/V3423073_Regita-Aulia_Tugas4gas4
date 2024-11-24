@@ -39,30 +39,6 @@ class AuthController extends Controller
         }
     }
 
-    public function register()
-    {
-        return view('auth.register', [
-            'title' => 'Register',
-        ]);
-    }
-
-    public function process(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users',
-            'password' => 'required',
-            'passwordConfirm' => 'required|same:password'
-        ]);
-
-        $validated['password'] = Hash::make($request['password']);
-
-        $user = User::create($validated);
-
-        Alert::success('Success', 'Register user has been successfully !');
-        return redirect('/login');
-    }
-
     public function logout(Request $request)
     {
         Auth::logout();

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Tag;
 use Exception;
 
 class BarangController extends Controller
@@ -14,11 +16,9 @@ class BarangController extends Controller
      */
     public function index()
     {
-        $barang = Barang::orderBy('name', 'asc')->get();
+        $barang = Barang::with('tags')->orderBy('name', 'asc')->get();
 
-        return view('barang.barang', [
-            'barang' => $barang
-        ]);
+        return view('barang.barang', compact('barang'));
     }
 
     /**
@@ -26,7 +26,9 @@ class BarangController extends Controller
      */
     public function create()
     {
-        return view('barang.barang-add');
+        $kategoris = Kategori::orderBy('nama', 'asc')->get(); // Ambil semua kategori
+        $tags = Tag::orderBy('name', 'asc')->get();
+        return view('barang.barang-add', compact('kategoris', 'tags')); 
     }
 
     /**
@@ -34,16 +36,21 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // Validasi data yang diterima dari form
+        $validated = $request->validate([
             'name' => 'required|max:100|unique:barangs',
-            'category' => 'required',
+            'category' => 'required|exists:kategoris,nama',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'stock' => 'required',
-            'price' => 'required',
+            'stock' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0',
+            'tags' => 'array|exists:tags,id_tag',  // Validasi array tag
             'note' => 'max:1000',
         ]);
+
+        // Ambil semua input dari request
         $input = $request->all();
 
+        // Proses gambar jika ada
         if ($image = $request->file('image')) {
             $destinationPath = 'images/';
             $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
@@ -51,23 +58,28 @@ class BarangController extends Controller
             $input['image'] = "$profileImage";
         }
 
+        // Simpan data barang
+        $barang = Barang::create($input); // Simpan barang pertama kali
 
-        Barang::create($input);
+        // Sync tags (memilih banyak tag untuk satu barang)
+        if ($request->has('tags')) {
+            $barang->tags()->sync($request->tags);  // Menyinkronkan tag yang dipilih dengan barang
+        }
 
-        Alert::success('Success', 'Barang has been saved !');
+        // Menampilkan pesan sukses
+        Alert::success('Success', 'Barang has been saved!');
         return redirect('/barang');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Barang $barang)
     {
-        // Mencari barang berdasarkan ID
-        $barang = Barang::find($barang->id_barang);
+    $barang = Barang::with('tags')->findOrFail($barang -> id_barang); // Mengambil barang beserta tags
 
-        // Menampilkan view dan mengirim data barang
-        return view('barang.barang-show', compact('barang'));
+    return view('barang.barang-show', compact('barang'));
     }
 
     /**
@@ -75,11 +87,11 @@ class BarangController extends Controller
      */
     public function edit($id_barang)
     {
-        $barang = barang::findOrFail($id_barang);
+        $barang = Barang::findOrFail($id_barang);
+        $kategoris = Kategori::orderBy('nama', 'asc')->get();
+        $tags = Tag::orderBy('name', 'asc')->get(); // Ambil data tags
 
-        return view('barang.barang-edit', [
-            'barang' => $barang,
-        ]);
+        return view('barang.barang-edit', compact('barang', 'kategoris', 'tags'));
     }
 
     /**
@@ -89,19 +101,19 @@ class BarangController extends Controller
     {
         $barang = Barang::findOrFail($id_barang);
 
-        // Validasi data, buat gambar opsional (nullable)
+        // Validasi data
         $validated = $request->validate([
             'name' => 'required|max:100|unique:barangs,name,' . $id_barang . ',id_barang',
             'category' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',  // Nullable, agar gambar opsional
-            'stock' => 'required',
-            'price' => 'required',
-            'note' => 'max:1000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg', // Tambahkan nullable
+            'stock' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0',
+            'note' => 'nullable|max:1000', // Note juga opsional
         ]);
 
         // Cek jika ada file gambar baru
         if ($request->hasFile('image')) {
-            // Hapus gambar lama
+            // Hapus gambar lama jika ada
             if ($barang->image) {
                 $oldImagePath = public_path('images/' . $barang->image);
                 if (file_exists($oldImagePath)) {
@@ -126,6 +138,7 @@ class BarangController extends Controller
         Alert::info('Success', 'Barang has been updated!');
         return redirect('/barang');
     }
+
 
 
     /**
@@ -153,4 +166,11 @@ class BarangController extends Controller
             return redirect('/barang');
         }
     }
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'category', 'nama'); // 'category' di tabel 'barangs', 'nama' di tabel 'kategoris'
+    }
+
+
 }

@@ -22,4 +22,9 @@ class Barang extends Model
         'price',
         'note'
     ];
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'barang_tag', 'barang_id', 'tag_id');
+    }
 }

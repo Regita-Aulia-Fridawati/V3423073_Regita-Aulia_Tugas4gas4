@@ -30,7 +30,8 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="text-right">
-                                    <a href="/barang/create" class="bg-blue-500 text-white font-bold px-2 py-1 rounded"><i class="fa-solid fa-plus"></i> Add
+                                    <a href="/barang/create" class="bg-blue-500 text-white font-bold px-2 py-1 rounded"><i
+                                            class="fa-solid fa-plus"></i> Add
                                         Barang</a>
                                 </div>
                             </div>
@@ -46,6 +47,7 @@
                                             <th>Category</th>
                                             <th>Stock</th>
                                             <th>Price</th>
+                                            <th>Tags</th>
                                             <th>Note</th>
                                             <th>Action</th>
                                         </tr>
@@ -59,22 +61,33 @@
                                                 <td>{{ $data->category }}</td>
                                                 <td>{{ $data->stock }}</td>
                                                 <td>Rp. {{ number_format($data->price, 0) }}</td>
+                                                <td>
+                                                    @foreach ($data->tags as $tag)
+                                                        <span class="badge badge-info">{{ $tag->name }}</span>
+                                                    @endforeach
+                                                </td>
                                                 <td>{{ $data->note }}</td>
                                                 <td>
-                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}/edit" method="GET">
-                                                        <button type="submit" class="btn btn-success btn-sm text-xs px-2 py-1">
+                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}/edit"
+                                                        method="GET">
+                                                        <button type="submit"
+                                                            class="btn btn-success btn-sm text-xs px-2 py-1">
                                                             <i class="fa-solid fa-pen"></i> Edit
                                                         </button>
                                                     </form>
-                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}" method="GET">
-                                                        <button type="submit" class="btn btn-info btn-sm text-xs px-2 py-1">
+                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}"
+                                                        method="GET">
+                                                        <button type="submit"
+                                                            class="btn btn-info btn-sm text-xs px-2 py-1">
                                                             <i class="fa fa-eye"></i> Show
                                                         </button>
                                                     </form>
-                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}" method="POST">
+                                                    <form class="d-inline" action="/barang/{{ $data->id_barang }}"
+                                                        method="POST">
                                                         @csrf
                                                         @method('delete')
-                                                        <button type="submit" class="btn btn-danger btn-sm text-xs px-2 py-1" id="btn-delete">
+                                                        <button type="submit"
+                                                            class="btn btn-danger btn-sm text-xs px-2 py-1" id="btn-delete">
                                                             <i class="fa-solid fa-trash-can"></i> Delete
                                                         </button>
                                                     </form>
